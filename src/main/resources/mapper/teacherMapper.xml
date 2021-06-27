@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjj.attendance.mapper.TeacherMapper">
+    <select id="queryClazStudent" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz
+        from student
+        where claz=#{claz}
+    </select>
+
+    <select id="searchStudent" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz
+        from student
+        where stu_name like concat('%' , #{stuName} , '%') and claz=#{claz}
+    </select>
+
+    <select id="queryClaz" resultType="String">
+        select claz from teacher
+        where teacher_id=#{teacherId}
+    </select>
+
+    <select id="queryClazAttendance" resultType="Attendance">
+        SELECT a.atd_id atdId , absence_date absenceDate ,lesson , lesson_name lessonName , a.stu_name stuName , absence_type absenceType
+        FROM attendance a LEFT JOIN stu_atd sa ON a.atd_id = sa.atd_id
+        LEFT JOIN student s ON sa.stu_id = s.stu_id
+        WHERE s.claz=#{claz}
+    </select>
+
+    <select id="searchStudentAttendance" resultType="Attendance">
+        SELECT a.atd_id atdId , absence_date absenceDate ,lesson , lesson_name lessonName , a.stu_name stuName , absence_type absenceType
+        FROM attendance a LEFT JOIN stu_atd sa ON a.atd_id = sa.atd_id
+        LEFT JOIN student s ON sa.stu_id = s.stu_id
+        WHERE s.stu_name like concat('%' , #{stuName} , '%') and s.claz=#{claz}
+    </select>
+
+    <insert id="insertStudentAttendance">
+        insert IGNORE into attendance(absence_date , lesson , lesson_name , stu_name , absence_type)
+        values (#{attendance.absenceDate} , #{attendance.lesson} , #{attendance.lessonName} , #{attendance.stuName} , #{attendance.absenceType})
+    </insert>
+
+    <update id="updateAbsenceType">
+        update attendance
+        set absence_type = #{absenceType}
+        where atd_id = #{atdId}
+    </update>
+</mapper>

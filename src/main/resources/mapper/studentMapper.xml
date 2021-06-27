@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjj.attendance.mapper.StudentMapper">
+    <select id="queryStudentList" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz
+        from student
+    </select>
+
+    <select id="searchStudent" resultType="Student">
+            select stu_id stuId , stu_name stuName , gender , age , claz
+            from student
+            where stu_name like concat('%' , #{stuName} , '%')
+    </select>
+
+    <select id="queryOneStudent" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz
+        from student
+        where stu_name=#{stuName}
+    </select>
+
+    <select id="queryOneById" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz from student
+        where stu_id = #{stuId}
+    </select>
+
+    <delete id="deleteStudent" parameterType="String">
+        delete from student where stu_id in
+        <foreach collection="array" item="ids" index="no" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <insert id="insertStudent" >
+        insert IGNORE into student(stu_id , stu_name , gender , age , claz)
+        values
+        (#{student.stuId} , #{student.stuName} , #{student.gender} , #{student.age} , #{student.claz})
+    </insert>
+
+    <update id="updateStudent">
+        update student
+        <trim prefix="set" suffixOverrides=",">
+            <if test="student.stuName != null">stu_name=#{student.stuName},</if>
+            <if test="student.gender != null">gender=#{student.gender},</if>
+            <if test="student.age != null">age=#{student.age},</if>
+            <if test="student.claz != null">claz=#{student.claz},</if>
+        </trim>
+        where stu_id=#{student.stuId}
+    </update>
+
+    <select id="getMyAttendance" resultType="Attendance">
+        select atd_id atdId , absence_date absenceDate , lesson , lesson_name lessonName , stu_name stuName , absence_type absenceType
+        from attendance
+        where atd_id in (select atd_id from stu_atd where stu_id = #{stuId})
+    </select>
+</mapper>

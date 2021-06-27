@@ -1,0 +1,33 @@
+server:
+  # 配置服务器端口为8080
+  port: 8080
+
+# 配置mybatis
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.cjj.attendance.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/attendance?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF8&useSSL=true&allowMultiQueries=true
+    username: root
+    password: 1234
+    type: com.alibaba.druid.pool.DruidDataSource
+#  thymeleaf: # thymeleaf 视图解析器
+#    prefix: classpath:/
+#    suffix: .html
+#    servlet:
+#      content-type: text/html
+#    cache: false
+#    encoding: UTF-8
+
+#分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

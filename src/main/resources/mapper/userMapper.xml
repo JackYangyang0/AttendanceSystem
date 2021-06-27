@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjj.attendance.mapper.UserMapper">
+    <select id="login" resultType="User">
+        select username , password from user
+        where username=#{username} and password = #{password}
+    </select>
+
+    <select id="teacherLogin" resultType="Teacher">
+        select teacher_id teacherId , teacher_name teacherName , claz , password
+        from teacher
+        where teacher_id=#{teacherId} and password=#{password}
+    </select>
+
+    <select id="studentLogin" resultType="Student">
+        select stu_id stuId , stu_name stuName , gender , age , claz
+        from student
+        where stu_id = #{stuId}
+    </select>
+
+    <insert id="signUp">
+        insert IGNORE into user(username , password , nickname)
+        values (#{username} , #{password} , #{nickname})
+    </insert>
+</mapper>

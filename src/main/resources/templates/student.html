@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生列表</title>
+</head>
+<body>
+<!--表格重载，搜索-->
+<div id="inquire" class="layui-form" style="margin-top: 15px">
+    <div class="layui-inline">
+        <form class="layui-form layui-form-pane" action=" " lay-filter="params-search">
+            <div class="layui-form-item">
+                <!-- name -->
+                <div class="layui-inline">
+                    <label class="layui-form-label">学生查询</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" autocomplete="off" placeholder="请输入学生姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="submit" class="layui-btn layui-btn-normal" lay-submit
+                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                    </button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-danger" lay-submit
+                            lay-filter="reset-search"><i class="layui-icon"></i> 重 置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="add" style="display: none;margin: 20px">
+    <form id="dataFrm" class="layui-form layui-form-pane" lay-filter="dataFrm">
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label" >学号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="stuId" placeholder="请输入学号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">学生姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="stuName" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-inline" lay-filter="myDiv">
+                <select name="gender" lay-verify="">
+                    <option value="1">男</option>
+                    <option value="0">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">年龄</label>
+            <div class="layui-input-inline">
+                <input type="text" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">班级</label>
+            <div class="layui-input-inline">
+                <input type="text" name="claz" placeholder="请输入班级" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+                <button type="button" class="layui-btn" lay-submit lay-filter="doSubmit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+</div>
+<div id="update" style="display: none;margin: 20px">
+    <form id="dataUpdate" class="layui-form layui-form-pane" lay-filter="dataFrm">
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">学生学号</label>
+            <div class="layui-input-inline">
+                <input type="text" id="stuId" name="stuId" class="layui-input" readonly="true">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">学生姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" id="stuName" name="stuName" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-inline" lay-filter="myDiv">
+                <select name="gender" lay-verify="">
+                    <option value="1">男</option>
+                    <option value="0">女</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">年龄</label>
+            <div class="layui-input-inline">
+                <input type="text" id="age" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">班级</label>
+            <div class="layui-input-inline">
+                <input type="text" id="claz" name="claz" placeholder="请输入班级" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn" lay-submit lay-filter="doUpdateSubmit">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+</div>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="delete">删除选择数据</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="add">添加数据</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-sm" href="javascript:;" onclick="openRight('/studentDetail')" >查看</a>
+</script>
+<script>
+    layui.use(['table', 'layer', 'form'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        layui.form.render('select','myDiv');
+        form.render();
+        table.render({
+            elem: '#test'  //这里指的是table的id
+            ,url:'/student/list'
+            ,page: true
+            ,toolbar: '#toolbarDemo'//开启头部工具栏，并为其绑定左侧模板
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'stuId',title: '学号', sort: true}
+                    ,{field:'stuName',title: '姓名'}
+                    ,{field:'gender',title: '性别'
+                        ,
+                        templet: function (data) {
+                            return data.gender===1?"<span class='layui-badge layui-bg-green'>男</span>":"<span class='layui-badge layui-bg-green'>女</span>"
+                        }
+                    }
+                    ,{field:'age',title: '年龄'}
+                    ,{field:'claz',title: '班级'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]
+            ]
+        });
+        /**
+         *  监听搜索操作
+         */
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            console.log(data.field.value);
+            //执行搜索重载
+            table.reload('test', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+        /**
+         * 重置搜索条件
+         */
+        form.on('submit(reset-search)',function (data) {
+            form.val("params-search", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                "name": " ",
+            });
+            data.field.name="";
+            table.reload('test', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(test)', function(obj){//这里的test指的是table的lay-filter
+            var checkStatus = table.checkStatus("test");//这里指的是table的id
+            console.log(obj)
+            switch(obj.event){
+                case 'delete':
+                    var data = checkStatus.data;//当前选中的数据
+                    if(data.length>0){
+                        layer.confirm('确定删除吗',function (index) {
+                            //根据id删除数据
+                            var params="";
+                            $.each(data,function (i,obj) {
+                                console.log(obj)
+                                params+="&ids="+obj.stuId;
+                            })
+                            $.ajax({
+                                url:'/student/delete',
+                                data:params,
+                                method:'delete',
+                                success:function (result) {
+                                    if(result.code == 0){
+                                        table.reload('test',{});//重新加载数据
+                                    }else {
+                                        alert(result.msg)
+                                    }
+                                    layer.close(index)
+                                }
+                            })
+                        })
+                    }
+                    break;
+                case 'add':
+                    openAddWindow();
+                    break;
+            };
+        });
+
+        /**
+         * 打开添加窗口代码
+         */
+        function  openAddWindow() {
+            mainIndex = layer.open({
+                type: 1,
+                offset: '100px',
+                title: "添加学生信息",
+                area:['650px','550px'],
+                shade: 0,
+                shadeClose: false,
+                content: $("#add"),
+                success: function () {
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    url="/student/insert";
+                }
+            });
+        }
+
+        /**
+         * tool监听事件
+         */
+        table.on('tool(test)' , function (obj) {
+            var checkStatus = table.checkStatus("test");//这里指的是table的id
+            console.log(obj)
+            switch(obj.event){
+                case 'edit':
+                    openUpdateWindow(obj.data);
+                    break;
+            }
+        })
+
+        /**
+         * 监听表单数据
+         */
+        form.on("submit(doSubmit)",function (data) {
+            console.log(data)
+            $.ajax({
+                url: "/student/insert" ,
+                data: JSON.stringify(data.field),
+                method:'post',
+                dataType:"json",
+                contentType: "application/json;charset=utf-8",
+                success:function (result) {
+                    if(result.code == 0){
+                        table.reload('test',{});//重新加载数据
+                    }else {
+                        alert(result.msg)
+                    }
+                    layer.close(mainIndex)
+                }
+            })
+            return false;
+        })
+
+        /**
+         *  修改窗口代码
+         */
+        function openUpdateWindow(data){
+            $("#stuId").val(data.stuId)
+            $("#stuName").val(data.stuName)
+            $("#gender").val(data.gender)
+            $("#age").val(data.age)
+            $("#claz").val(data.claz)
+            index = layer.open({
+                type: 1,
+                offset: '100px',
+                title: "修改学生信息",
+                area:['650px','550px'],
+                shade: 0,
+                shadeClose: false,
+                content: $("#update"),
+                success: function () {
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    url="/student/updateStudent";
+                }
+            });
+        }
+        /**
+         * 监听表单数据
+         */
+        form.on("submit(doUpdateSubmit)",function (data) {
+            console.log(data)
+            $.ajax({
+                url: "/student/update" ,
+                data: JSON.stringify(data.field),
+                method:'put',
+                dataType:"json",
+                contentType: "application/json;charset=utf-8",
+                success:function (result) {
+                    if(result.code == 0){
+                        table.reload('test',{});//重新加载数据
+                    }else {
+                        alert(result.msg)
+                    }
+                    layer.close(index)
+                }
+            })
+            return false;
+        })
+
+    });
+    function openRight(url) {
+        $("#main").load(url);
+    }
+</script>
+</body>
+</html>

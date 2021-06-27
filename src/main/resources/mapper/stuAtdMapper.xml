@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjj.attendance.mapper.StuAtdMapper">
+
+    <insert id="addMsg">
+        insert into stu_atd (stu_id , atd_id) values (#{stuId} , #{atdId})
+    </insert>
+
+    <select id="queryMsgId" resultType="String">
+        select atd_id atdId from stu_atd
+        where stu_id in
+        <foreach collection="array" item="ids" open="(" close=")" separator="," index="no">
+            #{ids}
+        </foreach>
+    </select>
+
+    <select id="queryStudentAttendance" resultType="Attendance">
+        select a.atd_id atdId , absence_date absenceDate ,lesson , lesson_name lessonName , s.stu_name stuName , absence_type absenceType
+        from attendance a left join stu_atd sa on a.atd_id = sa.atd_id
+        left join student s on sa.stu_id = s.stu_id
+        where s.stu_id = #{stuId}
+    </select>
+
+    <delete id="deleteMsg">
+        delete IGNORE from stu_atd where
+        stu_id in
+        <foreach collection="array" item="ids" index="no" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMsgByAtdId">
+        delete from stu_atd where
+        atd_id in
+        <foreach collection="array" item="ids" index="no" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+</mapper>

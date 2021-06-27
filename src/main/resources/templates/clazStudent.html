@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本班学生列表</title>
+</head>
+<body>
+<!--表格重载，搜索-->
+<div id="inquire" class="layui-form" style="margin-top: 15px">
+    <div class="layui-inline">
+        <form class="layui-form layui-form-pane" action=" " lay-filter="params-search">
+            <div class="layui-form-item">
+                <!-- name -->
+                <div class="layui-inline">
+                    <label class="layui-form-label">学生查询</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" autocomplete="off" placeholder="请输入学生姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="submit" class="layui-btn layui-btn-normal" lay-submit
+                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                    </button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-danger" lay-submit
+                            lay-filter="reset-search"><i class="layui-icon"></i> 重 置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script>
+    layui.use(['table', 'layer', 'form'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        table.render({
+            elem: '#test'  //这里指的是table的id
+            ,url:'/teacher/studentList'
+            ,page: true
+            ,toolbar: '#toolbarDemo'//开启头部工具栏，并为其绑定左侧模板
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'stuId',title: '学号', sort: true}
+                    ,{field:'stuName',title: '姓名'}
+                    ,{field:'gender',title: '性别'
+                    ,
+                    templet: function (data) {
+                        return data.gender===1?"<span class='layui-badge layui-bg-green'>男</span>":"<span class='layui-badge layui-bg-green'>女</span>"
+                    }
+                }
+                    ,{field:'age',title: '年龄'}
+                    ,{field:'claz',title: '班级'}
+                    // ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]
+            ]
+        });
+        /**
+         *  监听搜索操作
+         */
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            console.log(data.field.value);
+            //执行搜索重载
+            table.reload('test', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+        /**
+         * 重置搜索条件
+         */
+        form.on('submit(reset-search)',function (data) {
+            form.val("params-search", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                "name": " ",
+            });
+            data.field.name="";
+            table.reload('test', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

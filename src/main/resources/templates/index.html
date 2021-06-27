@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>学生考勤后台系统</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">主页</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                <a href="javascript:;">
+                    <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" class="layui-nav-img">
+                    我
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/manager/myself">个人主页</a></dd>
+                    <dd><a href="/manager/settings">设置</a></dd>
+                    <dd><a href="/login.html">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-more-vertical"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">学生列表</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="openRight('/student')">学生列表</a></dd>
+                        <dd><a href="javascript:;" onclick="openRight('/studentDetail')">学生详细</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">考勤列表</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="openRight('/attendance')">考勤列表</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="main">
+
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        这是一个考勤系统！
+    </div>
+</div>
+<script src="/layui/layui.js"></script>
+<script src="/layui/jquery-2.2.4.min.js"></script>
+<script>
+    //JS
+    layui.use(['element', 'layer', 'util'], function(){
+        var element = layui.element
+    });
+    function openRight(url) {
+        $("#main").load(url);
+    }
+</script>
+</body>
+</html>

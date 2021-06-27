@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本班学生考勤记录</title>
+</head>
+<body>
+<!--表格重载，搜索-->
+<div id="inquire" class="layui-form" style="margin-top: 15px">
+    <div class="layui-inline">
+        <form class="layui-form layui-form-pane" action=" " lay-filter="params-search">
+            <div class="layui-form-item">
+                <!-- name -->
+                <div class="layui-inline">
+                    <label class="layui-form-label">学生考勤查询</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" autocomplete="off" placeholder="请输入学生姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="submit" class="layui-btn layui-btn-normal" lay-submit
+                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                    </button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-danger" lay-submit
+                            lay-filter="reset-search"><i class="layui-icon"></i> 重 置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="add" style="display: none;margin: 20px">
+    <form id="dataFrm" class="layui-form layui-form-pane" lay-filter="dataFrm">
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">缺勤日期</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="absenceDate" placeholder="请选择缺勤日期" lay-key="2" name="absenceDate">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">第几节课</label>
+            <div class="layui-input-inline">
+                <input type="text" name="lesson" placeholder="请输入第几节课" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">课程名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="lessonName" placeholder="请输入缺勤课程" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">缺课学生姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="stuName" placeholder="请输入学生姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">缺课类型</label>
+            <div class="layui-input-inline" lay-filter="myDiv">
+                <select name="absenceType" lay-verify="">
+                    <option value="1">迟到</option>
+                    <option value="2">早退</option>
+                    <option value="3">请假</option>
+                    <option value="4">旷课</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn" lay-submit lay-filter="doSubmit">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+</div>
+<div id="update" style="display: none;margin: 20px">
+    <form id="updateFrm" class="layui-form layui-form-pane" lay-filter="dataFrm">
+        <div hidden>
+            <input type="hidden" id="atdId" name="atdId">
+        </div>
+        <div class="layui-form-item" style="padding-left: 120px">
+            <label class="layui-form-label">缺课类型</label>
+            <div class="layui-input-inline" lay-filter="myDiv">
+                <select name="absenceType" lay-verify="">
+                    <option value="1">迟到</option>
+                    <option value="2">早退</option>
+                    <option value="3">请假</option>
+                    <option value="4">旷课</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn" lay-submit lay-filter="doUpdateSubmit">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </form>
+</div>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="add">添加数据</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">编辑</a>
+</script>
+<script>
+    layui.use(['table', 'layer', 'form' , 'laydate'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        //国际版
+        laydate.render({
+            elem: '#absenceDate'
+            ,lang: 'en'
+        });
+
+        layui.form.render('select','myDiv');
+        form.render();
+        table.render({
+            elem: '#test'  //这里指的是table的id
+            ,url:'/teacher/attendanceList'
+            ,page: true
+            ,toolbar: '#toolbarDemo'//开启头部工具栏，并为其绑定左侧模板
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'atdId',title: '编号', sort: true}
+                    ,{field:'absenceDate',title: '缺勤日期'}
+                    ,{field:'lesson',title: '缺勤第几节课'}
+                    ,{field:'lessonName',title: '缺勤课程'}
+                    ,{field:'stuName',title: '学生姓名'}
+                    ,{field:'absenceType',title: '缺课类型'
+                    ,
+                    templet: function (data) {
+                        switch (data.absenceType) {
+                            case 1:
+                                return "<span class='layui-badge layui-bg-green'>迟到</span>"
+                            case 2:
+                                return "<span class='layui-badge layui-bg-green'>早退</span>"
+                            case 3:
+                                return "<span class='layui-badge layui-bg-green'>请假</span>"
+                            case 4:
+                                return "<span class='layui-badge layui-bg-green'>旷课</span>"
+                        }
+                    }   // return data.absenceType===1?"<span class='layui-badge layui-bg-green'>男</span>":"<span class='layui-badge layui-bg-green'>女</span>"
+                },
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]
+            ]
+        });
+        /**
+         *  监听搜索操作
+         */
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            console.log(data.field.value);
+            //执行搜索重载
+            table.reload('test', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+        /**
+         * 重置搜索条件
+         */
+        form.on('submit(reset-search)',function (data) {
+            form.val("params-search", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                "name": " ",
+            });
+            data.field.name="";
+            table.reload('test', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    name:data.field.name
+                }
+            });
+            return false;
+        });
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(test)', function(obj){//这里的test指的是table的lay-filter
+            console.log(obj)
+            openAddWindow();
+
+        });
+        /**
+         *  tool事件监听
+         */
+        table.on('tool(test)' , function(obj) {
+            console.log(obj)
+            openUpdateWindow(obj.data);
+        })
+        /**
+         * 打开添加窗口代码
+         */
+        function  openAddWindow() {
+            mainIndex = layer.open({
+                type: 1,
+                offset: '100px',
+                title: "添加考勤信息",
+                area:['650px','550px'],
+                shade: 0,
+                shadeClose: false,
+                content: $("#add"),
+                success: function () {
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    url="/teacher/insertAttendance";
+                }
+            });
+        }
+
+        /**
+         *  修改窗口代码
+         */
+        function openUpdateWindow(data){
+            $("#atdId").val(data.atdId)
+            $("#absenceType").val(data.absenceType)
+            mainIndex = layer.open({
+                type: 1,
+                offset: '200px',
+                title: "修改考勤信息",
+                area:['650px','300px'],
+                shade: 0,
+                shadeClose: false,
+                content: $("#update"),
+                success: function () {
+
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    url="/student/updateStudent";
+                }
+            });
+        }
+
+        /**
+         * 监听表单数据
+         */
+        form.on("submit(doSubmit)",function (data) {
+            // console.log(data)
+            // var select = document.getElementById("#mySelect");
+            // console.log(select)
+            $.ajax({
+                url: "/teacher/insertAttendance" ,
+                data: JSON.stringify(data.field),
+                method:'post',
+                dataType:"json",
+                contentType: "application/json;charset=utf-8",
+                success:function (result) {
+                    if(result.code == 0){
+                        alert(result.msg)
+                        table.reload('test',{});//重新加载数据
+                    }else {
+                        alert(result.msg)
+                    }
+                    layer.close(mainIndex)
+                }
+            })
+            return false;
+        })
+
+        /**
+         * 监听表单数据
+         */
+        form.on("submit(doUpdateSubmit)",function (data) {
+            console.log(data)
+            $.ajax({
+                url: "/teacher/updateAttendance" ,
+                data: JSON.stringify(data.field),
+                method:'put',
+                dataType:"json",
+                contentType: "application/json;charset=utf-8",
+                success:function (result) {
+                    if(result.code == 0){
+                        alert(result.msg)
+                        table.reload('test',{});//重新加载数据
+                    }else {
+                        alert(result.msg)
+                    }
+                    layer.close(mainIndex)
+                }
+            })
+            return false;
+        })
+    });
+</script>
+</body>
+</html>
