@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本班缺勤记录</title>
+</head>
+<body>
+    <div id="echars_main" style="width: 800px;height:500px;margin-left: 200px;margin-top: 20px"></div>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('echars_main'));
+
+        myChart.setOption({
+            title: {text: "每月缺勤数统计"},
+            tooltip: {},
+            legend: {data: ["出勤数"]},
+            xAxis: {
+                data: ['1月' , '2月' , '3月' , '4月' , '5月', '6月' , '7月' , '8月' , '9月' , '10月' , '11月' ,'12月']
+            },
+            yAxis: {},
+            series: [{
+                name: '出勤',
+                type: 'line',
+                data: []
+            }]
+        });
+
+        $.ajax({
+            url: "/attendance/getClazAttendanceDate",
+            success:function(ret){
+                console.log(ret)
+                myChart.setOption({
+                    series: [{
+                        name: '缺勤数',
+                        type: 'line',
+                        data: ret.data
+                    }]
+                })
+            }
+        });
+    </script>
+</body>
+</html>

@@ -46,4 +46,28 @@
         where atd_id=#{attendance.atdId}
     </update>
 
+    
+    <select id="getDateNum" resultType="DateNum">
+        SELECT DATE_FORMAT(absence_date,'%m') AS month  , COUNT(*) count FROM attendance GROUP BY month;
+    </select>
+
+    <select id="getClazDateNum" resultType="DateNum">
+       SELECT DATE_FORMAT(absence_date,'%m') AS MONTH  , COUNT(*) COUNT FROM attendance
+        WHERE atd_id IN (
+		    SELECT a.atd_id
+		    FROM attendance a LEFT JOIN stu_atd sa ON a.atd_id = sa.atd_id
+		    LEFT JOIN student s ON sa.stu_id = s.stu_id
+		    WHERE s.claz = #{claz}
+		)
+        GROUP BY MONTH;
+    </select>
+
+    <select id="getMyDateNum" resultType="DateNum">
+        SELECT DATE_FORMAT(absence_date,'%m') AS MONTH  , COUNT(*) COUNT FROM attendance
+        WHERE atd_id IN (
+          SELECT a.atd_id FROM attendance a LEFT JOIN stu_atd sa ON a.atd_id = sa.atd_id
+          WHERE sa.stu_id = #{stuId}
+        )
+        GROUP BY MONTH;
+    </select>
 </mapper>

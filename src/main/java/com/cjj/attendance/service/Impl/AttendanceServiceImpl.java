@@ -1,6 +1,7 @@
 package com.cjj.attendance.service.Impl;
 
 import com.cjj.attendance.entity.Attendance;
+import com.cjj.attendance.entity.DateNum;
 import com.cjj.attendance.entity.Student;
 import com.cjj.attendance.mapper.AttendanceMapper;
 import com.cjj.attendance.mapper.StuAtdMapper;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -84,4 +86,41 @@ public class AttendanceServiceImpl implements AttendanceService {
         int i = attendanceMapper.updateAttendance(attendance);
         return i;
     }
+
+    /**
+     * 获取每个月有多少缺勤的
+     * @return
+     */
+    @Transactional(propagation = Propagation.SUPPORTS , readOnly = true)
+    @Override
+    public List<DateNum> getDateNum() {
+        List<DateNum> dateNum = attendanceMapper.getDateNum();
+        return dateNum;
+    }
+
+    /**
+     * 获取本班级有多少缺勤的记录
+     * @param claz
+     * @return
+     */
+    @Transactional(propagation = Propagation.SUPPORTS , readOnly = true)
+    @Override
+    public List<DateNum> getClazDateNum(String claz) {
+        List<DateNum> clazDateNum = attendanceMapper.getClazDateNum(claz);
+        return clazDateNum;
+    }
+
+    /**
+     * 查询学生自身的缺勤记录数量
+     * @param stuId
+     * @return
+     */
+    @Transactional(propagation = Propagation.SUPPORTS , readOnly = true)
+    @Override
+    public List<DateNum> getMyDateNum(String stuId) {
+        List<DateNum> myDateNum = attendanceMapper.getMyDateNum(stuId);
+        return myDateNum;
+    }
+
+
 }

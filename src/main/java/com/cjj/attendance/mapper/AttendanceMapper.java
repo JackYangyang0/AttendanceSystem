@@ -1,10 +1,12 @@
 package com.cjj.attendance.mapper;
 
 import com.cjj.attendance.entity.Attendance;
+import com.cjj.attendance.entity.DateNum;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface AttendanceMapper {
@@ -47,5 +49,25 @@ public interface AttendanceMapper {
      * @return
      */
     int updateAttendance(@Param("attendance") Attendance attendance);
+
+    /**
+     * 查询每月有多少缺勤记录
+     * @return
+     */
+    List<DateNum> getDateNum();
+
+    /**
+     * 查询本班级每月有多少缺勤记录
+     * @param claz
+     * @return
+     */
+    List<DateNum> getClazDateNum(String claz);
+
+    /**
+     * 查询学生自己有多少缺勤记录
+     * @param stuId
+     * @return
+     */
+    List<DateNum> getMyDateNum(String stuId);
 
 }

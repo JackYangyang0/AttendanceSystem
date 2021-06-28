@@ -38,4 +38,12 @@ public class ViewController {
         return "myAttendance";
     }
 
+    @GetMapping("echarts")
+    public String echarts(){ return "echarts"; }
+
+    @GetMapping("teacherEcharts")
+    public String teacherEcharts(){ return "teacherEcharts"; }
+
+    @GetMapping("myEcharts")
+    public String myEcharts(){ return "myEcharts"; }
 }
