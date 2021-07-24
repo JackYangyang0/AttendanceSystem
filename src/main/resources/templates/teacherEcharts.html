@@ -30,6 +30,7 @@
             success:function(ret){
                 console.log(ret)
                 myChart.setOption({
+                    title: {text: ret.claz+"每月缺勤数统计"},
                     series: [{
                         name: '缺勤数',
                         type: 'line',

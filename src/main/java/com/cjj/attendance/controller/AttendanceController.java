@@ -117,6 +117,7 @@ public class AttendanceController {
         for (DateNum num : clazDateNum) {
             data[num.getMonth() - 1] = num.getCount();
         }
+        map.put("claz" , claz);
         map.put("data" , data);
         return map;
     }

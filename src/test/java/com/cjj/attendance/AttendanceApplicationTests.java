@@ -51,4 +51,9 @@ class AttendanceApplicationTests {
         }
     }
 
+    @Test
+    void test1(){
+        PageInfo<Attendance> pageInfo = attendanceService.queryAttendance(1, 5);
+        System.out.println(pageInfo);
+    }
 }
